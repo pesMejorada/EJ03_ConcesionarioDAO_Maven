@@ -8,10 +8,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 import es.concesionario.modelo.Coche;
 
 public class CocheDAO {
-	
+    
 	     private Connection cx;
 	     private static CocheDAO cocheDao=null;
 	     
@@ -24,24 +28,30 @@ public class CocheDAO {
 	     }
 	   
 	     private void conectar() {
-	       try {
+	     try {
 	            Class.forName("com.mysql.jdbc.Driver");
 	            cx= DriverManager.getConnection("jdbc:mysql://localhost:3306/CONCESIONARIO","root","root");
 	            cx.setAutoCommit(false);
-	        } catch (SQLException e) {
-	           
-	            e.printStackTrace();
-	        } catch (ClassNotFoundException e) {
-	            // TODO Auto-generated catch block
-	            e.printStackTrace();
-	        }
+	     }
+    catch(SQLException e) {
+             
+        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Error en SQL ", e);
+         }
+	     catch(ClassNotFoundException e) {
+	         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "No se encuentra lib mySQL ", e);
+         }
+     
+	    
+	    
+	      
 	     }
 	     private void desconectar() {
 	         try {
-	            cx.close();
+	             if(cx!=null)
+	                cx.close();
 	        } catch (SQLException e) {
-	            // TODO Auto-generated catch block
-	            e.printStackTrace();
+	           
+	            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Error al cerrar conexión ", e);
 	        }
 	         
 	         
@@ -71,12 +81,14 @@ public class CocheDAO {
 	                 if(filasAfectadas>=1) {
 	                     id= ultimoId();    
 	               }
-	                //.5.cerrar la conexión
-	                 desconectar();
+	               
 	            } catch (SQLException e) {
-	                // TODO Auto-generated catch block
-	                e.printStackTrace();
+	                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Error SQL ", e);
 	            }
+	            finally {
+	                //.5.cerrar la conexión
+                    desconectar();
+	              }
 	         return id;
 	    }
 	    public Coche consultarUno(int id) {
@@ -86,7 +98,7 @@ public class CocheDAO {
 	            conectar();
 	          //2. preparar la consulta
 	            PreparedStatement ps;
-	            ps = cx.prepareStatement("SELEC * FROM COCHE WHERE ID=?");
+	            ps = cx.prepareStatement("SELECT * FROM COCHE WHERE ID=?");
 	           // 2.1 setear los ?
 	                ps.setInt(1, id);
 	           // 3, ejecutar la consulta
@@ -103,12 +115,15 @@ public class CocheDAO {
 	                 p.setMarchas(rs.getBoolean("marchas"));
 	                 
 	             }
-	           //5.desconectar
-	             desconectar();
+	          
 	        } catch (SQLException e) {
 	            // TODO Auto-generated catch block
-	            e.printStackTrace();
+	            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Error SQL ", e);
 	        }
+	           finally {
+	               //5.desconectar
+	                 desconectar();
+	           }
 	      return p;
 	    }
 	    public ArrayList<Coche> consultarTodos() {
@@ -133,12 +148,15 @@ public class CocheDAO {
 	                p.setMarchas(consulta.getBoolean("marchas"));	                
 	                coches.add(p);
 	            }
-	            //5. desconectar
-	            desconectar();
+	           
 	        } catch (SQLException e) {
-	        	// TODO Auto-generated catch block
-	        	e.printStackTrace();
+	            
+	            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Error SQL ", e);
 	        }
+	        finally {
+                //5.desconectar
+                  desconectar();
+            }
 	        
 	        return coches;
 	    }
@@ -157,12 +175,18 @@ public class CocheDAO {
 	    		if(consulta.next()) {
 	    			idM=consulta.getInt("ULTIMO");
 	    		}
-	    		//5. desconectar
-	    		desconectar();
+	    		
 	    	} catch (SQLException e) {
-	    		// TODO Auto-generated catch block
-	    		e.printStackTrace();
+	    		    		
+	    		 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Calculo ultimo id", e);
+	    		
+	    		
+	    	
 	    	}
+	    	finally {
+                //5.desconectar
+                  desconectar();
+            }
 	    	return idM;
 	    }
 	    public ArrayList<Coche> consultarMatricula(String matricula) {
@@ -188,12 +212,15 @@ public class CocheDAO {
 	    			p.setMarchas(consulta.getBoolean("marchas"));
 	    			coches.add(p);
 	    		}
-	    		//5. desconectar
-	    		desconectar();
+	    		
 	    	} catch (SQLException e) {
-	    		// TODO Auto-generated catch block
-	    		e.printStackTrace();
+	    		
+	    	    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Calculo ultimo id", e);
 	    	}
+	    	finally {
+                //5.desconectar
+                  desconectar();
+            }
 	    	return coches;
 	    }
 	    public int borrar(int id) {
@@ -204,11 +231,13 @@ public class CocheDAO {
 	    		ps.setInt(1,id);
 	    		filasAfectada=ps.executeUpdate();
 	    		cx.commit();
-	    		desconectar();
-	    	} catch (SQLException e) {
+	    			} catch (SQLException e) {
 	    		// TODO Auto-generated catch block
-	    		e.printStackTrace();
-	    	}       
+	    			    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Error SQL ", e);
+	    	}     finally {
+                //5.desconectar
+                desconectar();
+          }  
 	    	return filasAfectada;
 	    }
 	    public int actualizar(int id, String matricula, String marca,
@@ -227,11 +256,15 @@ public class CocheDAO {
 	    		ps.setInt(7, id);
 	    		filasAfectada=ps.executeUpdate();
 	    		cx.commit();
-	    		desconectar();
+	    	
 	    	} catch (SQLException e) {
-	    		// TODO Auto-generated catch block
-	    		e.printStackTrace();
-	    	}       
+	    		
+	    	    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Error SQL ", e);
+	    	}   
+	    	finally {
+                //5.desconectar
+                  desconectar();
+            }
 	    	return filasAfectada;
 	    }
 }
