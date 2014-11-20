@@ -2,6 +2,8 @@ package es.concesionario.modelo;
 
 import java.util.ArrayList;
 
+import javax.jws.WebService;
+
 import es.concesionario.integracion.CocheDAO;
 import es.concesionario.modelo.Coche;
 
