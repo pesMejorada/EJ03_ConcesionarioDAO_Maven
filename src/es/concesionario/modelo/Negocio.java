@@ -50,11 +50,11 @@ public class Negocio {
 			String msg;
 			
 			int cochesactualizados=cochedao.actualizar(id,matricula,marca,modelo,color,numCaballos,marchas);
-			if(cochesactualizados!=1){
-				msg="SE HAN ACTUALIZADO"+cochesactualizados+ "coches";
-			}else{
-				msg="NO SE HAN ACTUALIZADO";
-			}
+		
+				msg="Coches actualizados :"+cochesactualizados;
+	
+			
+		
 			return msg;
 		}
 		

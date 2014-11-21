@@ -38,7 +38,7 @@ public class ProcesarServlet extends HttpServlet {
 		int numCaballos=Integer.parseInt(request.getParameter("numCaballos"));
 		String marcha=request.getParameter("marchas");
 		boolean marchas=true;
-		if(marcha.equals("1"))
+		if(marcha==null)
 			 marchas=false;
 		String borrar=request.getParameter("borrar");
 		String actualizar=request.getParameter("actualizar");
@@ -50,8 +50,8 @@ public class ProcesarServlet extends HttpServlet {
 		if(actualizar!=null){
 			n=negocio.actualizar(id,matricula,marca,modelo,color,numCaballos,marchas);
 		}
-		String mensaje=negocio.actualizar(id,matricula,marca,modelo,color,numCaballos,marchas);
-		request.setAttribute("mensaje", mensaje);
+		//String mensaje=negocio.actualizar(id,matricula,marca,modelo,color,numCaballos,marchas);
+		request.setAttribute("mensaje", n);
 		RequestDispatcher rd=request.getRequestDispatcher("vistaMensaje.jsp");
 		rd.forward(request, response);
 	}

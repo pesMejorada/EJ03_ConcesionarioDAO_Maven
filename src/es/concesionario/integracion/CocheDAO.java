@@ -245,8 +245,7 @@ public class CocheDAO {
 	    	int filasAfectada=0;
 	    	try {
 	    		conectar();
-	    		PreparedStatement ps = cx.prepareStatement("UPDATE COCHE SET MATRICULA=?,MARCA=?,MODELO=?,COLOR=?"
-	    				+ "NUMCABALLOS=?,MARCHAS=? WHERE ID=?");
+	    		PreparedStatement ps = cx.prepareStatement("UPDATE COCHE SET MATRICULA=?,MARCA=?,MODELO=?,COLOR=?	,NUMCABALLOS=?,MARCHAS=? WHERE ID=?");
 	    		ps.setString(1, matricula);
 	    		ps.setString(2, marca);
 	    		ps.setString(3, modelo);

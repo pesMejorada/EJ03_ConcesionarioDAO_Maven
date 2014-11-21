@@ -42,7 +42,7 @@ public class DarAltaServlet extends HttpServlet {
 		int numCaballos=Integer.parseInt(request.getParameter("numCaballos"));
 		String marcha=request.getParameter("marchas");
 		boolean marchas;
-		if(marcha.equals("0")){
+		if(marcha.equals("marchasSi")){
 			marchas=true;
 		}else{
 			marchas=false;

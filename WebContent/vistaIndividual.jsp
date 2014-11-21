@@ -29,7 +29,8 @@
       <td><input type="text" name="modelo" value="<%=coche.getModelo() %>"/></td>
       <td><input type="text" name="color" value="<%=coche.getColor() %>"/></td>
       <td><input type="text" name="numCaballos" value="<%=coche.getNumCaballos() %>"/></td>
-      <td><input type="text" name="marchas" value="<%=coche.isMarchas() %>"/></td>
+      <td><input type="checkbox" name="marchas" value=""
+             <%=coche.isMarchas()?"checked='checked'":"" %>/></td>
   </tr>
 </table>
  <input class="botones" type="submit" value="Borrar" id="borrar" name="borrar"/>
